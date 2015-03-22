@@ -24,14 +24,14 @@ enum PoolEvent{
 	ThreadDone(u64),
 	Stop
 }
-struct Pool<'a>{
+pub struct Pool<'a>{
 	join_guards: Arc<Mutex<HashMap<u64, JoinGuard<'a,()>>>>,
 	manager_guard: JoinGuard<'a,()>,
 	next_id: u64,
 	end_out: Sender<PoolEvent>
 }
 impl<'a> Pool<'a>{
-	fn new() -> Pool<'a>{
+	pub fn new() -> Pool<'a>{
 		let join_guards = Arc::new(Mutex::new(HashMap::new()));
 
 		let (end_out,end_in) = channel();
@@ -56,7 +56,7 @@ impl<'a> Pool<'a>{
 			end_out: end_out
 		}
 	}
-	fn add_task<T>(&mut self, task:T)
+	pub fn add_task<T>(&mut self, task:T)
 	where T: Fn() + Send + Sync + 'a{
 		let id = self.next_id;
 		self.next_id += 1;
@@ -78,7 +78,7 @@ impl<'a> Pool<'a>{
 		self.manager_guard.join();
 	}
 
-	fn size(&self) -> usize{
+	pub fn size(&self) -> usize{
 		self.join_guards.lock().unwrap().len()
 	}
 }
