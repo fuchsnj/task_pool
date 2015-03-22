@@ -57,7 +57,7 @@ impl<'a> Pool<'a>{
 		}
 	}
 	pub fn add_task<T>(&mut self, task:T)
-	where T: Fn() + Send + Sync + 'a{
+	where T: FnOnce() + Send + Sync + 'a{
 		let id = self.next_id;
 		self.next_id += 1;
 		let mut map = self.join_guards.lock().unwrap();
@@ -68,7 +68,7 @@ impl<'a> Pool<'a>{
 				PoolEvent::ThreadDone(id)
 			).unwrap();
 		});
-		map.insert(0,guard);
+		map.insert(id,guard);
 	}
 
 	pub fn join(self){
