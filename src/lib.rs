@@ -1,3 +1,5 @@
+#![feature(scoped)]
+
 use std::thread;
 use std::thread::JoinGuard;
 use std::sync::mpsc::channel;
